@@ -18,6 +18,17 @@
 
   ![ssr](./pics/ssr-react.png)
 
+## App Overview:
+
+  - We would have `two` separate backend servers, onr for business logic (auth, logging, db access, ...) and the other one for rendering the html document.
+
+  -  the first benefit of this separation is that we could replace react with any other technology at any time.
+
+  - Another benefit is that we could scale out each server separately.
+
+  - IMPORTANT NOTE: SSR performance is not fast and needs optimization (like having fast machines for the rendering servers). check out this link 
+
+  ![sepservers](./pics/sep-servers.png)
 
 
 
