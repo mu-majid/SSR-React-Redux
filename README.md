@@ -26,7 +26,7 @@
 
   - Another benefit is that we could scale out each server separately.
 
-  - IMPORTANT NOTE: SSR performance is not fast and needs optimization (like having fast machines for the rendering servers). check out this link 
+  - IMPORTANT NOTE: SSR performance is not fast and needs optimization (like having fast machines for the rendering servers). check out this [Walmart labs blog post](https://medium.com/walmartglobaltech/using-electrode-to-improve-react-server-side-render-performance-by-up-to-70-e43f9494eb8b) 
 
   ![sepservers](./pics/sep-servers.png)
 
