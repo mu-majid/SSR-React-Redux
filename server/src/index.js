@@ -6,7 +6,7 @@ import Renderer from './helpers/renderer';
 const app = express();
 
 app.use(express.static('public'));
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
 
   return res.send(Renderer(req));
 });
