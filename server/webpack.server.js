@@ -1,6 +1,8 @@
 const path = require('path');
+const merge = require('webpack-merge');
+const baseConfig = require('./webpack.base');
 
-module.exports = {
+const config = {
   // Inform webpack that we are building a bundle
   // for nodeJS rather than a browser
   target: 'node',
@@ -13,23 +15,7 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'build')
-  },
-
-  // Tell webpack to run babel on every file it runs through
-  module: {
-    rules: [
-      {
-        test: /\.js?$/, // only apply babel to js files
-        loader: 'babel-loader',
-        exclude: /node_modules/,
-        options: {
-          presets: [
-            'react', // jsx to function calls
-            'stage-0', // for async code
-            ['env', { targets: { browsers: ['last 2 versions'] } }] // handle transpile for last versions for browsers
-          ]
-        }
-      }
-    ]
   }
 }
+
+module.exports = merge(baseConfig, config);
