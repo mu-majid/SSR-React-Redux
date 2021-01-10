@@ -3,10 +3,14 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Home from './components/Home';
+import { BrowserRouter } from 'react-router-dom';
+import Routes from './Routes';
+
 
 ReactDOM.hydrate(
-  <Home />,
+  <BrowserRouter>
+    <Routes />
+  </BrowserRouter>,
   // this will take over the div rendered and sent by the server initially
   // We do this to mount/register our event handlers, ...
   document.querySelector('#root') 

@@ -60,3 +60,34 @@
   -----
 
   ![execorder](./pics/exec-order.png)
+
+## Routing Inside SSR Application:
+
+  - We have two tiers of routing inside our app like shown in th picture below
+  ![routing](./pics/routing.png)
+
+  - express route handler will delegate  requests to react router instead of handling it. So react router has the final saying in what gets shown on the screen. (both on server -delegating reqs to it by express handler- and on client when hydration occur).
+
+  ## How React Router Work ? (BrowserRouter)
+
+  ![browser-router](./pics/browser-router.png)
+
+  - So browser router looks at address bar in the browser, This is hardcoded in it, So we can't use it inside our sevrer.
+
+  - We will use `StaticRouter` when we need routing on the server, and `BrowserRouter` when the application gets hydrated on the browser.
+
+  - the setup will look like this:
+
+  ![static-router](./pics/static-router.png)
+
+  - `Routes.js`: Will include all route mappings.
+  - Import this `Routes.js` file into:
+
+    1. `rerenderer.js` on the server - This uses `StaticRouter`.
+    2. `client.js` on the client/browser - This uses `BrowserRouter` .
+
+
+
+
+
+
