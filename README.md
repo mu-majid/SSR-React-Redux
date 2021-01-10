@@ -54,6 +54,8 @@
 
   - Another reason is when we add Router and Redux, we will need different configurations for them when executed on the server or on the client.
 
+  - the process of putting functionality back to an html that's already rendered is called **Hydration**.
+
   Code Execution Order on the browser with SSR:
   -----
 
