@@ -18,6 +18,23 @@
 
   ![ssr](./pics/ssr-react.png)
 
+## App Overview:
 
+  - We would have `two` separate backend servers, onr for business logic (auth, logging, db access, ...) and the other one for rendering the html document.
 
+  -  the first benefit of this separation is that we could replace react with any other technology at any time.
+
+  - Another benefit is that we could scale out each server separately.
+
+  - IMPORTANT NOTE: SSR performance is not fast and needs optimization (like having fast machines for the rendering servers). check out this [Walmart labs blog post](https://medium.com/walmartglobaltech/using-electrode-to-improve-react-server-side-render-performance-by-up-to-70-e43f9494eb8b) 
+
+  ![sepservers](./pics/sep-servers.png)
+
+## Notes: 
+
+  - **ReactDOM.render**: Creates instances of a bunch of components and mounts them to a DOM node.
+  - **ReactDOM.renderToString**: renders a bunch of components one time and produces a string out of all the resulting HTML.
+
+  - Isomorphic/Universal Javascript: same code runs on both client and server (like using es5 imports on the server)
+  - Server-side Rendering: Generate HTML on the server and ship it down to the client.
 
