@@ -42,3 +42,19 @@
   - But in the case of SSR, no JS files are sent to the user by default, So, we need, after sending HTML, to send our react app that have the JS functionality.
 
   - So to ship the react app to the browser we are going to create a **second bundle** that only contains the React App code (the first one contains server code + react app).
+
+  ## Why second bundle ??
+
+    - These are the two bundles we create right now.
+    - `indexjs` serves as the root (bootup) for the react app on the server, and `clientjs` serves as the root (bootup) for the react app on the browser.
+
+  ![bundles](./pics/two-bundles.png)
+
+    - `indexjs` on the server depends on the `Home.js` component, and also  the `clientjs` file depends on `Home.js` component, **but** we need the segregation between them for many reasons, the first one being server code might have sensitive data that cannot be sent to the client
+
+    - Another reason is when we add Router and Redux, we will need different configurations for them when executed on the server or on the client.
+
+    Code Execution Order on the browser with SSR:
+    -----
+
+  ![execorder](./pics/exec-order.png)
