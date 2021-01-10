@@ -25925,10 +25925,10 @@ var _Home2 = _interopRequireDefault(_Home);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = function () {
-  return React.createElement(
+  return _react2.default.createElement(
     'div',
     null,
-    React.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Home2.default })
+    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Home2.default })
   );
 };
 

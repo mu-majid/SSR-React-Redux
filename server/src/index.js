@@ -8,7 +8,7 @@ const app = express();
 app.use(express.static('public'));
 app.get('/', (req, res) => {
 
-  return res.send(Renderer());
+  return res.send(Renderer(req));
 });
 
 app.listen(3000, () => {

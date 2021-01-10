@@ -86,7 +86,7 @@
     1. `rerenderer.js` on the server - This uses `StaticRouter`.
     2. `client.js` on the client/browser - This uses `BrowserRouter` .
 
-
+**Html Mismatch** occurs when a mismatch occur between what gets produced on the client and on the server, so the html from server is different from what react app produces on the browser.
 
 
 
