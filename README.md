@@ -22,6 +22,8 @@
 
   - We would have `two` separate backend servers, onr for business logic (auth, logging, db access, ...) and the other one for rendering the html document.
 
+  - the budiness logic server lives at `https://react-ssr-api.herokuapp.com/`
+
   -  the first benefit of this separation is that we could replace react with any other technology at any time.
 
   - Another benefit is that we could scale out each server separately.
@@ -88,6 +90,13 @@
 
 **Html Mismatch** occurs when a mismatch occur between what gets produced on the client and on the server, so the html from server is different from what react app produces on the browser.
 
+  ## Redux with SSR ??
 
+  - We have four big challenges with regard to Redux with SSR.
 
+  ![4-challenges](./pics/4-challenges.png)
 
+  1. the first one is a result of the other three challenges and should be solved by having two stores one on the server and the other o the client.
+  2. We need to know who is authenticated, and we are using cookie based auth, and this data is hard to obtain on the server.
+  3. on the browser, we call `actionCreator`, and let it do its thing (fire request, signal it has finished, run reducer, react re-renders when we state change ), but now on the server we need to handle all these steps that were handled for us on the browser.
+  4. this is the easier one :)
