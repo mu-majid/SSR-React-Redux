@@ -1,4 +1,4 @@
-// Root file
+// Root file for server bundle
 
 import express from 'express';
 import React from 'react';
