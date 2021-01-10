@@ -35,3 +35,6 @@
   - **ReactDOM.render**: Creates instances of a bunch of components and mounts them to a DOM node.
   - **ReactDOM.renderToString**: renders a bunch of components one time and produces a string out of all the resulting HTML.
 
+  - Isomorphic/Universal Javascript: same code runs on both client and server (like using es5 imports on the server)
+  - Server-side Rendering: Generate HTML on the server and ship it down to the client.
+

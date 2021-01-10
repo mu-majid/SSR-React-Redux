@@ -1,11 +1,11 @@
 // Root file
-const express = require('express');
+
+import express from 'express';
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+import Home from './client/components/Home';
+
 const app = express();
-
-const React = require('react');
-const renderToString = require('react-dom/server').renderToString;
-const Home = require('./client/components/Home').default;
-
 app.get('/', (req, res) => {
 
   return res.send(renderToString(<Home />));
