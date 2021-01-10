@@ -6,9 +6,22 @@ import { renderToString } from 'react-dom/server';
 import Home from './client/components/Home';
 
 const app = express();
+
+app.use(express.static('public'));
 app.get('/', (req, res) => {
 
-  return res.send(renderToString(<Home />));
+  const content = renderToString(<Home />);
+  const html = `
+    <html>
+      <head></head>
+      <body>
+        <div>${content}</div>
+        <script src="bundle.js"></script>
+      </body>
+    </html>
+  `;
+
+  return res.send(html);
 });
 
 app.listen(3000, () => {
