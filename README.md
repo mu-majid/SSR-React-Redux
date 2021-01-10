@@ -38,3 +38,7 @@
   - Isomorphic/Universal Javascript: same code runs on both client and server (like using es5 imports on the server)
   - Server-side Rendering: Generate HTML on the server and ship it down to the client.
 
+  - Event handlers (onClick, ...) are registered after component is re4ndered and atached to the dom in a regular react app.
+  - But in the case of SSR, no JS files are sent to the user by default, So, we need, after sending HTML, to send our react app that have the JS functionality.
+
+  - So to ship the react app to the browser we are going to create a **second bundle** that only contains the React App code (the first one contains server code + react app).
