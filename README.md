@@ -22,6 +22,8 @@
 
   - We would have `two` separate backend servers, onr for business logic (auth, logging, db access, ...) and the other one for rendering the html document.
 
+  - the budiness logic server lives at `https://react-ssr-api.herokuapp.com/`
+
   -  the first benefit of this separation is that we could replace react with any other technology at any time.
 
   - Another benefit is that we could scale out each server separately.
@@ -38,3 +40,63 @@
   - Isomorphic/Universal Javascript: same code runs on both client and server (like using es5 imports on the server)
   - Server-side Rendering: Generate HTML on the server and ship it down to the client.
 
+  - Event handlers (onClick, ...) are registered after component is re4ndered and atached to the dom in a regular react app.
+  - But in the case of SSR, no JS files are sent to the user by default, So, we need, after sending HTML, to send our react app that have the JS functionality.
+
+  - So to ship the react app to the browser we are going to create a **second bundle** that only contains the React App code (the first one contains server code + react app).
+
+  ## Why second bundle ??
+
+  - These are the two bundles we create right now.
+  - `indexjs` serves as the root (bootup) for the react app on the server, and `clientjs` serves as the root (bootup) for the react app on the browser.
+
+  ![bundles](./pics/two-bundles.png)
+
+  - `indexjs` on the server depends on the `Home.js` component, and also  the `clientjs` file depends on `Home.js` component, **but** we need the segregation between them for many reasons, the first one being server code might have sensitive data that cannot be sent to the client
+
+  - Another reason is when we add Router and Redux, we will need different configurations for them when executed on the server or on the client.
+
+  - the process of putting functionality back to an html that's already rendered is called **Hydration**.
+
+  Code Execution Order on the browser with SSR:
+  -----
+
+  ![execorder](./pics/exec-order.png)
+
+## Routing Inside SSR Application:
+
+  - We have two tiers of routing inside our app like shown in th picture below
+  ![routing](./pics/routing.png)
+
+  - express route handler will delegate  requests to react router instead of handling it. So react router has the final saying in what gets shown on the screen. (both on server -delegating reqs to it by express handler- and on client when hydration occur).
+
+  ## How React Router Work ? (BrowserRouter)
+
+  ![browser-router](./pics/browser-router.png)
+
+  - So browser router looks at address bar in the browser, This is hardcoded in it, So we can't use it inside our sevrer.
+
+  - We will use `StaticRouter` when we need routing on the server, and `BrowserRouter` when the application gets hydrated on the browser.
+
+  - the setup will look like this:
+
+  ![static-router](./pics/static-router.png)
+
+  - `Routes.js`: Will include all route mappings.
+  - Import this `Routes.js` file into:
+
+    1. `rerenderer.js` on the server - This uses `StaticRouter`.
+    2. `client.js` on the client/browser - This uses `BrowserRouter` .
+
+**Html Mismatch** occurs when a mismatch occur between what gets produced on the client and on the server, so the html from server is different from what react app produces on the browser.
+
+  ## Redux with SSR ??
+
+  - We have four big challenges with regard to Redux with SSR.
+
+  ![4-challenges](./pics/4-challenges.png)
+
+  1. the first one is a result of the other three challenges and should be solved by having two stores one on the server and the other o the client.
+  2. We need to know who is authenticated, and we are using cookie based auth, and this data is hard to obtain on the server.
+  3. on the browser, we call `actionCreator`, and let it do its thing (fire request, signal it has finished, run reducer, react re-renders when we state change ), but now on the server we need to handle all these steps that were handled for us on the browser.
+  4. this is the easier one :)
