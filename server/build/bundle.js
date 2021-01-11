@@ -181,7 +181,9 @@ app.get('*', function (req, res) {
     return route.loadData ? route.loadData(store) : null;
   });
 
-  return res.send((0, _renderer2.default)(req, store));
+  Promise.all(componentsDataPromises).then(function () {
+    return res.send((0, _renderer2.default)(req, store));
+  });
 });
 
 app.listen(3000, function () {
