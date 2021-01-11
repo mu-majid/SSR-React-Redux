@@ -138,3 +138,9 @@
 
   - **Note** that for us to know what component will be rendered from the url we can not rely on the current Router (StaticRouter) configuration we have, because Router needs the app to be rendered first and that we don't need.
 
+  - react-router-config is a library that allow us to inspect what components are needed for a requested page before the app gets rendered.
+
+  - We will define a `loadData` function on each component that preloads any data that a component needs before being rendered
+
+  ![loaddata](./pics/load-data.png)
+
