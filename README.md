@@ -144,3 +144,14 @@
 
   ![loaddata](./pics/load-data.png)
 
+  ### Client State rehydration:
+
+  - there is an issue that rises from the fact that we create and populate a store on the server, but when bundle is sent to client the browser creates another empty redux store, causing an error to be logged in the browser console (becuase empty store clears page temporarily).
+
+  ![clientrehydration](./pics/client-state-rehyration.png)
+
+  - the solution simply is to dump server store state into the HTML template and when bundle is shipped to the browser it will use the dumped data inside the HTML to init the browser store with it.
+
+  ![clientrehydration2](./pics/client-state-rehyration2.png)
+
+
