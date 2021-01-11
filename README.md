@@ -100,3 +100,60 @@
   2. We need to know who is authenticated, and we are using cookie based auth, and this data is hard to obtain on the server.
   3. on the browser, we call `actionCreator`, and let it do its thing (fire request, signal it has finished, run reducer, react re-renders when we state change ), but now on the server we need to handle all these steps that were handled for us on the browser.
   4. this is the easier one :)
+
+
+  - babel-polyfill is a module that enable using async/await syntax inside am action creator
+
+  ### What happens when we invoke an action creator (on browser vs on server) ?
+
+  - right now on the browser this is the flow (normal react flow)
+
+  ![action-browser](./pics/action-creator-browser.png)
+
+  - but on the server, we respond immediately after rendering app without waiting for the reducer to run and re-render the app, So the `componentDidMount` lifecycle method does not get called on the server.
+
+  ![action-server](./pics/action-creator-server.png)
+
+  #### Solution one:
+
+  - try to render the app two times:
+
+  ![sol-one](./pics/sol-one.png)
+
+  - This solution has a **pro** of not having to write a lot code (however we need to know when action creator finishes)
+  - But, there are some **cons**: 
+    1. Rendering the app twice (takes a lot of resources to render a react app)
+    2. This solution only works with one round of requests. (So a scenartio like requireAuth -> fetch Resource that require auth would not work.)
+
+
+
+  #### Solution two: (Data Loading solution taken by most of frameworks)
+
+  ![sol-two](./pics/sol-two.png)
+
+  - This solution has a **con** that we need to write more code.
+  - But the **Pros** are:
+    1. only render app one time.
+    2. Makes data required by each component clear.
+
+  - **Note** that for us to know what component will be rendered from the url we can not rely on the current Router (StaticRouter) configuration we have, because Router needs the app to be rendered first and that we don't need.
+
+  - react-router-config is a library that allow us to inspect what components are needed for a requested page before the app gets rendered.
+
+  - We will define a `loadData` function on each component that preloads any data that a component needs before being rendered
+
+  ![loaddata](./pics/load-data.png)
+
+  ### Client State rehydration:
+
+  - there is an issue that rises from the fact that we create and populate a store on the server, but when bundle is sent to client the browser creates another empty redux store, causing an error to be logged in the browser console (becuase empty store clears page temporarily).
+
+  ![clientrehydration](./pics/client-state-rehyration.png)
+
+  - the solution simply is to dump server store state into the HTML template and when bundle is shipped to the browser it will use the dumped data inside the HTML to init the browser store with it.
+
+  ![clientrehydration2](./pics/client-state-rehyration2.png)
+
+  -**NOTE**: React render function by default serialize and sanitize user input, but in case of SSR we are sending content as string without sanitizing anything (Use serialize-javascript instead of json.stringfy)
+
+
