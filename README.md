@@ -103,3 +103,38 @@
 
 
   - babel-polyfill is a module that enable using async/await syntax inside am action creator
+
+  ### What happens when we invoke an action creator (on browser vs on server) ?
+
+  - right now on the browser this is the flow (normal react flow)
+
+  ![action-browser](./pics/action-creator-browser.png)
+
+  - but on the server, we respond immediately after rendering app without waiting for the reducer to run and re-render the app, So the `componentDidMount` lifecycle method does not get called on the server.
+
+  ![action-server](./pics/action-creator-server.png)
+
+  #### Solution one:
+
+  - try to render the app two times:
+
+  ![sol-one](./pics/sol-one.png)
+
+  - This solution has a **pro** of not having to write a lot code (however we need to know when action creator finishes)
+  - But, there are some **cons**: 
+    1. Rendering the app twice (takes a lot of resources to render a react app)
+    2. This solution only works with one round of requests. (So a scenartio like requireAuth -> fetch Resource that require auth would not work.)
+
+
+
+  #### Solution two: (Data Loading solution taken by most of frameworks)
+
+  ![sol-two](./pics/sol-two.png)
+
+  - This solution has a **con** that we need to write more code.
+  - But the **Pros** are:
+    1. only render app one time.
+    2. Makes data required by each component clear.
+
+  - **Note** that for us to know what component will be rendered from the url we can not rely on the current Router (StaticRouter) configuration we have, because Router needs the app to be rendered first and that we don't need.
+
