@@ -2,13 +2,17 @@
 
 import express from 'express';
 import Renderer from './helpers/renderer';
+import createStore from './helpers/redux-server-store';
 
 const app = express();
 
 app.use(express.static('public'));
 app.get('*', (req, res) => {
+  const store = createStore();
 
-  return res.send(Renderer(req));
+  // init and load data into store
+
+  return res.send(Renderer(req, store));
 });
 
 app.listen(3000, () => {
