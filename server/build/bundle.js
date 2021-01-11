@@ -151,6 +151,8 @@ var _express = __webpack_require__(6);
 
 var _express2 = _interopRequireDefault(_express);
 
+var _reactRouterConfig = __webpack_require__(14);
+
 var _renderer = __webpack_require__(7);
 
 var _renderer2 = _interopRequireDefault(_renderer);
@@ -159,6 +161,10 @@ var _reduxServerStore = __webpack_require__(15);
 
 var _reduxServerStore2 = _interopRequireDefault(_reduxServerStore);
 
+var _Routes = __webpack_require__(9);
+
+var _Routes2 = _interopRequireDefault(_Routes);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Root file for server bundle
@@ -166,9 +172,14 @@ var app = (0, _express2.default)();
 
 app.use(_express2.default.static('public'));
 app.get('*', function (req, res) {
-  var store = (0, _reduxServerStore2.default)();
+  var store = (0, _reduxServerStore2.default)(); // server side store
 
-  // init and load data into store
+  // get components that needs to be rendered for the requested page (req.path)
+  var componentsDataPromises = (0, _reactRouterConfig.matchRoutes)(_Routes2.default, req.path).map(function (_ref) {
+    var route = _ref.route;
+
+    return route.loadData ? route.loadData(store) : null;
+  });
 
   return res.send((0, _renderer2.default)(req, store));
 });
@@ -272,6 +283,7 @@ exports.default = [{
   component: _Home2.default,
   exact: true
 }, {
+  loadData: _UsersList.loadData,
   path: '/users',
   component: _UsersList2.default
 }];
@@ -320,6 +332,7 @@ exports.default = Home;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.loadData = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -388,6 +401,12 @@ function mapStateToProps(state) {
   return { users: state.users };
 }
 
+function loadData(store) {
+
+  return store.dispatch((0, _actions.fetchUsers)()); // store is the server side store instance
+}
+
+exports.loadData = loadData;
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { fetchUsers: _actions.fetchUsers })(UsersList);
 
 /***/ }),

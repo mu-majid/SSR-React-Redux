@@ -28,4 +28,10 @@ function mapStateToProps (state) {
   return { users: state.users };
 }
 
+function loadData (store) {
+  
+  return store.dispatch(fetchUsers()); // store is the server side store instance
+}
+
+export { loadData };
 export default connect(mapStateToProps, { fetchUsers })(UsersList);
