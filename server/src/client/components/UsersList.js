@@ -10,14 +10,14 @@ class UsersList extends Component {
   renderusers () {
     return this.props.users.map(user => {
       return <li key={user.id} >{user.name}</li>;
-    })
+    });
   }
 
   render () {
     return (
       <div>
         <ul>
-          {this.renderusers}
+          {this.renderusers()}
         </ul>
       </div>
     );
