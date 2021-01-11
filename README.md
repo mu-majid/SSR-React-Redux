@@ -152,7 +152,7 @@
 
   - the solution simply is to dump server store state into the HTML template and when bundle is shipped to the browser it will use the dumped data inside the HTML to init the browser store with it.
 
-  ![clientrehydration2](./pics/client-state-rehyration2.png)
+  ![clientrehydration2](./pics/client-state-rehydration2.png)
 
   -**NOTE**: React render function by default serialize and sanitize user input, but in case of SSR we are sending content as string without sanitizing anything (Use serialize-javascript instead of json.stringfy)
 
