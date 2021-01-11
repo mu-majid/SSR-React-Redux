@@ -1,5 +1,5 @@
 // Root file for server bundle
-
+import 'babel-polyfill';
 import express from 'express';
 import Renderer from './helpers/renderer';
 import createStore from './helpers/redux-server-store';

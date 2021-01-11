@@ -100,3 +100,6 @@
   2. We need to know who is authenticated, and we are using cookie based auth, and this data is hard to obtain on the server.
   3. on the browser, we call `actionCreator`, and let it do its thing (fire request, signal it has finished, run reducer, react re-renders when we state change ), but now on the server we need to handle all these steps that were handled for us on the browser.
   4. this is the easier one :)
+
+
+  - babel-polyfill is a module that enable using async/await syntax inside am action creator

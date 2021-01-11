@@ -4,11 +4,11 @@ import { fetchUsers } from "../actions";
 
 class UsersList extends Component {
   componentDidMount () {
-
+    this.props.fetchUsers();
   }
 
   renderusers () {
-    return this.props.users.map(u => {
+    return this.props.users.map(user => {
       return <li key={user.id} >{user.name}</li>;
     })
   }
@@ -20,7 +20,7 @@ class UsersList extends Component {
           {this.renderusers}
         </ul>
       </div>
-    )
+    );
   }
 };
 

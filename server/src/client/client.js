@@ -1,6 +1,6 @@
 // entry point for client side app
 // treat this file as normal react app bootup
-
+import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
