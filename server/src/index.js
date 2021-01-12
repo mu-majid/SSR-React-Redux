@@ -11,13 +11,14 @@ const app = express();
 
 app.use('/api', proxy('hrrp://react-ssr-api.herokuapp.com', { // only specific to the API server implemented
   proxyReqOptDecorator(opts) {
-    opts.header['x-forwarded-host'] = 'localhost:3000'; // for google-oauth process
+    opts.headers['x-forwarded-host'] = 'localhost:3000'; // for google-oauth process
     return opts;
   }
 }));
+
 app.use(express.static('public'));
 app.get('*', (req, res) => {
-  const store = createStore(); // server side store
+  const store = createStore(req); // server side store
 
   // get components that needs to be rendered for the requested page (req.path)
   const componentsDataPromises = matchRoutes(Routes, req.path).map(({ route }) => {
