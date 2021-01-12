@@ -157,3 +157,24 @@
   -**NOTE**: React render function by default serialize and sanitize user input, but in case of SSR we are sending content as string without sanitizing anything (Use serialize-javascript instead of json.stringfy)
 
 
+## Authentication With SSR ?
+
+  - Our API uses **cookies** after going through OAuth flow, but the issue with cookies is that cookies are associated with full domain, so requests to sub domains will not include the cookie. So our Render Server will not be able to make requests to API server on behalf of the browser.
+
+  ![cokkieauth](./pics/auth-issue.png)
+
+  - one solution to setup a proxy on the render server itself, and when a user wants to authenticate with the API server , they will go through that proxy first.
+
+  ![proxy](./pics/auth-proxy.png)
+
+  - **Note** that the initial page loading does not require the proxy (render server will make the request on behalf of the browser.)
+
+  ![proxy-note](./pics/auth-proxy-flow.png)
+
+  ### Why Not JWTs ? 
+
+  *remember that jwts could be used inside a cookie, but here I am discussing JWTs inside header, url or body of request*.
+
+  - The idea of SSR to send rendered content as fasf as possible, and when we think of the first initial request to the server, we would not be able to attach such a jwt and get content right away.
+
+  - Also think of a scenario that a user tpe the url in the browser bar and hits enter, we have zero control on that request except that cookies are sent by default with any request.
