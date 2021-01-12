@@ -30,6 +30,7 @@ function mapStateToProps (state) {
 }
 
 function loadData (store) {
+  console.log('Load Data Fn : Admins List Component');
   
   return store.dispatch(fetchAdmins()); // store is the server side store instance
 }
