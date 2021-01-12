@@ -8,22 +8,25 @@ const Header = ({ authenticated }) => {
   const authButton = authenticated ? (
     <a href="/api/logout" >Logout</a> // /api here to make request go through proxy then to API server
   ) : (
-    <a href="/api/auth/google" >Login</a>
-  )
+      <a href="/api/auth/google" >Login</a>
+    )
 
   return (
-    <div>
-      <Link to="/">SSR-React</Link>
-      <div>
-        <Link to="/users" >Users</Link>
-        <Link to="/admins" >Admins</Link>
-        {authButton}
+    <nav>
+      <div className="nav-wrapper">
+        <Link to="/" className="brand-logo" >SSR-React</Link>
+        <ul className="right">
+          <li><Link to="/users" >Users</Link></li>
+          <li><Link to="/admins" >Admins</Link></li>
+          <li>{authButton}</li>
+        </ul>
       </div>
-    </div>
+    </nav>
+
   )
 };
 
-function mapStateToProps ({ authenticated }) {
+function mapStateToProps({ authenticated }) {
   return { authenticated };
 }
 
