@@ -211,3 +211,4 @@
   ![solution](./pics/custom-axios.png)
 
   ## Authentication Flow itself ?
+  ![auth](./pics/auth.png)

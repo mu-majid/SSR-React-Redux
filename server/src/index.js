@@ -11,7 +11,7 @@ const app = express();
 
 app.use('/api', proxy('hrrp://react-ssr-api.herokuapp.com', { // only specific to the API server implemented
   proxyReqOptDecorator(opts) {
-    opts.headers['x-forwarded-host'] = 'localhost:3000'; // for google-oauth process
+    opts.headers['x-forwarded-host'] = 'localhost:3000'; // for google-oauth process destination param
     return opts;
   }
 }));
