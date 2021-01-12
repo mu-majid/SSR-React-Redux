@@ -170,7 +170,7 @@
   - **Note** that the initial page loading does not require the proxy (render server will make the request on behalf of the browser.)
 
   - **Note** Reaching out to API is done via `Action Creators` and we have to make sure that the exact same action creators are used both the server (no proxy) and on the client (through proxy) - This is what Isomorphic javascript is all about.
-  
+
 
   ![proxy-note](./pics/auth-proxy-flow.png)
 
@@ -181,3 +181,16 @@
   - The idea of SSR to send rendered content as fasf as possible, and when we think of the first initial request to the server, we would not be able to attach such a jwt and get content right away.
 
   - Also think of a scenario that a user tpe the url in the browser bar and hits enter, we have zero control on that request except that cookies are sent by default with any request.
+
+  - So, The steps we will go through are:
+    1. setup the proxy server.
+    2. Make sure action creators called from server does not go through proxy.
+    3. Make sure action creators called from browser go through proxy.
+
+  * step two diagram: 
+
+  ![steptwo](./pics/auth-step-two.png)
+
+  * step three diagram:
+
+  ![stepthree](./pics/auth-step-three.png)
