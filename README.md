@@ -197,15 +197,15 @@
 
   **How Would be able to achieve these steps without writing code like this inside action creator**
 
-    ```javascript
+  ```javascript
 
-      if(running on server) {
-        axios.get('http://react-ssr-api.herokuapp.com/users')
-      }
-      else if (running on the browser) [
-        axios.get('/api/users/', { cookie: cookie }) // remember, any request to /api will go through the proxy
-      ]
-    ```
+    if(running on server) {
+      axios.get('http://react-ssr-api.herokuapp.com/users')
+    }
+    else if (running on the browser) [
+      axios.get('/api/users/', { cookie: cookie }) // remember, any request to /api will go through the proxy
+    ]
+  ```
   * This could be achieved using some features from `axios` and `redux-thunk` libraries. Namely, create custom axios instance, and extraArgument to the thunk object.
 
   ![solution](./pics/custom-axios.png)
