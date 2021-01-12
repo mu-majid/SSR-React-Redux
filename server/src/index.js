@@ -27,7 +27,12 @@ app.get('*', (req, res) => {
 
   Promise.all(componentsDataPromises)
     .then(() => {
-      return res.send(Renderer(req, store));
+      const staticRouterContext = {};
+      const content = Renderer(req, store, staticRouterContext);
+      if (context.notFound) {
+        return res.status(404);
+      }
+      return res.send(content);
     });
   
 });

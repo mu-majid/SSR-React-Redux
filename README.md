@@ -206,9 +206,9 @@
     if(running on server) {
       axios.get('http://react-ssr-api.herokuapp.com/users')
     }
-    else if (running on the browser) [
+    else if (running on the browser) {
       axios.get('/api/users/', { cookie: cookie }) // remember, any request to /api will go through the proxy
-    ]
+    }
   ```
   * This could be achieved using some features from `axios` and `redux-thunk` libraries. Namely, create custom axios instance, and extraArgument to the thunk object.
 
@@ -216,3 +216,31 @@
 
   ## Authentication Flow itself ?
   ![auth](./pics/auth.png)
+
+## Error handling in SSR: 
+
+  - Figuring out when we need to send an error code back to the client we need to use the `context` property on the `StaticRouter`, (*This context is just a property, not to be confused with the react Context system*).(*context property does not exist on the browser router*)
+
+  ![staticcontext](./pics/static-router-context.png)
+
+  - The static router as shown above passes the context to every page getting rendered as a prop, after static router finish rendering we can check the context object if it has an error object (err obj assigned by for example NotFoundPage component)
+
+  **How do we connect the Context object which communicates some error message to the response object from express which we use to send a statusCode??**
+
+  * we will end up writing code like this in our index.js (express route handler)
+  ```javascript
+    const staticRouterContext = {};
+    const content = Renderer(req, store, staticRouterContext);
+    if (context.notFound) {
+      return res.status(404); // send status here
+    }
+    return res.send(content); // then send the content
+  ```
+  * And inside a component like `NotFoundPage`, we will recieve the `staticRouterContext` object created above like this
+  ```javascript
+    const NotFoundPage = ({ staticContext = {} }) => { // default to {} because it does not exist on BrowserRouter
+      staticContext.notFound = true;
+      return <h1>Ops, page Not Found</h1>
+    };
+  ```
+  * Note the `Renderer` function is the one that responsible for communicating the `staticRouterContext` to our components. 
