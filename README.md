@@ -3,6 +3,8 @@
   - This repo provides some information about SSR, why we use them, and challenges of SSR.
   - I will use React, with redux and React Router, Also, topics like authentication will be discussed.
 
+  check this links [one](https://vijayt.com/post/challenges-in-server-side-rendering-react-apps-ssr/), [two](https://nckweb.com.ar/a-pain-in-the-react-challenges-behind-ssr/)
+
 ## Why?
 
   - How traditional React app works?
@@ -158,6 +160,8 @@
 
 
 ## Authentication With SSR ?
+
+  check this link [one](https://www.bugsnag.com/blog/server-side-rendering-and-authenticated-content)
 
   - Our API uses **cookies** after going through OAuth flow, but the issue with cookies is that cookies are associated with full domain, so requests to sub domains will not include the cookie. So our Render Server will not be able to make requests to API server on behalf of the browser.
 
