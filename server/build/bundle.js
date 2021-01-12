@@ -256,7 +256,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var app = (0, _express2.default)(); // Root file for server bundle
 
 
-app.use('/api', (0, _expressHttpProxy2.default)('hrrp://react-ssr-api.herokuapp.com', {
+app.use('/api', (0, _expressHttpProxy2.default)('http://react-ssr-api.herokuapp.com', {
   // only specific to the API server implemented
   proxyReqOptDecorator: function proxyReqOptDecorator(opts) {
     opts.headers['x-forwarded-host'] = 'localhost:3000'; // for google-oauth process destination param
