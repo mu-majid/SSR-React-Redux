@@ -17,6 +17,7 @@ class UsersList extends Component {
     return (
       <div>
         <ul>
+          <div>Public resource of users</div>
           {this.renderusers()}
         </ul>
       </div>

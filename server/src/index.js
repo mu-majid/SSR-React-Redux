@@ -21,6 +21,7 @@ app.get('*', (req, res) => {
   const store = createStore(req); // server side store
 
   // get components that needs to be rendered for the requested page (req.path)
+  console.log('These Components needs rendering : \n', matchRoutes(Routes, req.path))
   const componentsDataPromises = matchRoutes(Routes, req.path).map(({ route }) => {
     return route.loadData ? route.loadData(store) : null;
   });
