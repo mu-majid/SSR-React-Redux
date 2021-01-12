@@ -243,4 +243,8 @@
       return <h1>Ops, page Not Found</h1>
     };
   ```
-  * Note the `Renderer` function is the one that responsible for communicating the `staticRouterContext` to our components. 
+  * Note the `Renderer` function is the one that responsible for communicating the `staticRouterContext` to our components.
+
+## Visiting Protected Resources:
+
+  -
