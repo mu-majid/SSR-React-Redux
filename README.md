@@ -169,6 +169,9 @@
 
   - **Note** that the initial page loading does not require the proxy (render server will make the request on behalf of the browser.)
 
+  - **Note** Reaching out to API is done via `Action Creators` and we have to make sure that the exact same action creators are used both the server (no proxy) and on the client (through proxy) - This is what Isomorphic javascript is all about.
+  
+
   ![proxy-note](./pics/auth-proxy-flow.png)
 
   ### Why Not JWTs ? 
