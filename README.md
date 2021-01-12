@@ -161,7 +161,7 @@
 
   - Our API uses **cookies** after going through OAuth flow, but the issue with cookies is that cookies are associated with full domain, so requests to sub domains will not include the cookie. So our Render Server will not be able to make requests to API server on behalf of the browser.
 
-  ![cokkieauth](./pics/auth-issue.png)
+  ![cookieauth](./pics/auth-issue.png)
 
   - one solution to setup a proxy on the render server itself, and when a user wants to authenticate with the API server , they will go through that proxy first.
 
@@ -210,3 +210,4 @@
 
   ![solution](./pics/custom-axios.png)
 
+  ## Authentication Flow itself ?
