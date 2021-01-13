@@ -268,3 +268,13 @@
   #### Note:
 
   * When a user tries to access a protected page, we should try to autheticate them (requireAuth) and if auth failed, we should redirect them away from this page to ,say, the login page.
+
+  * The error handling is happening when we actually render the react application (after fetching data occur (whether resolved or rejected))
+
+  * the below duagram shows that we have separated data fetcing process from error handling process. And very **importantly** if an error occur during data fetching, we are still rendering the application and only then we handle errors.
+
+  ![errorhandle](./pics/error-handling.png)
+
+  **But Why ???** => Remember error handling should also be done on the client, in case a user visit a public initial page then tries to visit a protected page the react app itself should be the one handling errors.
+
+  So the benefit is that our error handling is going to work equivalently well on the server and the browser.
