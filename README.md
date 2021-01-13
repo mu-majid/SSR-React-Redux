@@ -245,6 +245,26 @@
   ```
   * Note the `Renderer` function is the one that responsible for communicating the `staticRouterContext` to our components.
 
-## Visiting Protected Resources:
+## Visiting Protected Resources While not auth:
 
-  -
+  - this will essentially cause an error to be thrown from the component's `loadData` function. And we have to think of a better error handling.
+
+  #### Approach One:
+
+  * Just wire up a `.catch(err => {})` to our `Promise.all(promises)`.
+  * Not the best solution, actually it is the poorest one., because it dumbs the entore rendering process and just send an error to the user.
+
+  #### Approach Two:
+
+  * Always attepmt to render the content, no matter what error occurs.
+  * Better from the previous, but there is a big issue here, and that is, we are using `Promise.all`, and if any promise rejects, we will call catch and **render early**, even if there are some unresolved promises in the promise.all.
+
+  #### Approach Three: (used)
+
+  * So, the issue with approach 2 is rendering early because of how `Promise.all` works, it would be great if we could wait for all promises to resolve/reject and then render our content.
+  * one solution is to wrap each promise that gets produced from the `loadData()` call in another promise. This wrapper promise works as a watcher of the `loadData` promise, and this wrapper will always resolve, indicating the status of the inner promise.
+  * All these wrapper promises (outer promises) will be passed to the `Promise.all` call and as mentioned above these wrappers will always resolve, so we will not face the problem we had with promise.all previously.
+
+  #### Note:
+
+  * When a user tries to access a protected page, we should try to autheticate them (requireAuth) and if auth failed, we should redirect them away from this page to ,say, the login page.

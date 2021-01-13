@@ -324,6 +324,13 @@ app.get('*', function (req, res) {
     var route = _ref.route;
 
     return route.loadData ? route.loadData(store) : null;
+  }).map(function (promise) {
+    if (promise) {
+      return new Promise(function (resolve, reject) {
+        // wrapper promise that always resolve no matter what the result from inner promise is
+        promise.then(resolve).catch(resolve);
+      });
+    }
   });
 
   Promise.all(componentsDataPromises).then(function () {
@@ -338,6 +345,11 @@ app.get('*', function (req, res) {
     }
     return res.send(content);
   });
+  // .catch(error => {
+  //   console.log('Error Occured:: ', error);
+
+  //   return res.status(error.statusCode || 500).send(error.message);
+  // });
 });
 
 app.listen(3000, function () {
