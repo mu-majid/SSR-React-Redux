@@ -1,6 +1,6 @@
 ## Overview: 
 
-  - This repo provides some information about SSR, why we use them, and challenges of SSR.
+  - This repo provides some information about SSR, why we use it, and challenges of SSR.
   - I will use React, with redux and React Router, Also, topics like authentication will be discussed.
 
   check this links [one](https://vijayt.com/post/challenges-in-server-side-rendering-react-apps-ssr/), [two](https://nckweb.com.ar/a-pain-in-the-react-challenges-behind-ssr/)
