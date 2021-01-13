@@ -39,7 +39,11 @@ app.get('*', (req, res) => {
     .then(() => {
       const staticRouterContext = {};
       const content = Renderer(req, store, staticRouterContext);
-      console.log('rendering complete ', content.length)
+      console.log('rendering complete ', content.length);
+
+      if (staticRouterContext.url) {
+        return res.redirect(301, staticRouterContext.url)
+      }
 
       if (staticRouterContext.notFound) {
         console.log('Not Found ', staticRouterContext.notFound)

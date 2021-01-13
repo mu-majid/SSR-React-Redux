@@ -245,6 +245,8 @@
   ```
   * Note the `Renderer` function is the one that responsible for communicating the `staticRouterContext` to our components.
 
+  * Context is also for redirects on the server (use `Redirect` component from react-router-dom)
+
 ## Visiting Protected Resources While not auth:
 
   - this will essentially cause an error to be thrown from the component's `loadData` function. And we have to think of a better error handling.
@@ -278,3 +280,16 @@
   **But Why ???** => Remember error handling should also be done on the client, in case a user visit a public initial page then tries to visit a protected page the react app itself should be the one handling errors.
 
   So the benefit is that our error handling is going to work equivalently well on the server and the browser.
+
+  #### Higher Order Components:
+
+  *check this [link](https://blog.jakoblind.no/simple-explanation-of-higher-order-components-hoc/)*
+
+  * function that takes a component and wrap it and return an enhanced/wrapped version of the input component.
+  * The idea with HOC is to enhance components with functions or data.
+  * These type of components are very common around auth, redirect and validation logic in react applications.
+
+  #### Handling Redirects on the server:
+
+  * When we use the Redirect component from react-router-dom on server side to redirect the user, remember we are using StaticRouter on the server, and any redirects are recorded on te context object of that router.
+  * the context object will have a `url`, `location` and `action` properties if a redirect is attempted.
