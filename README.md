@@ -299,3 +299,21 @@
   * Optimizing for SEO, using `meta` tags. Check The Open Graph Protocol.
   * we want to have the ability to change these met tags depending on the page the user is visiting.
   * we will use `react-helmet` for setting these meta tags.
+
+## RenderToNodeStream() vs RenderToString() :
+
+  * Benefits of RenderToNodeStream:
+    1. returns a readable stream (instead of a string)
+    2. Short TTFB time (Time to First Byte) which is used by search engines to rate our pages.
+
+  * Why not use it? Ans.- Some features we use right now would not be available, like redirecting, There are some work arounds for it, but why go with a workaround :D
+
+  - **renderToString()** :
+  ![string](./pics/string.png)
+
+  - **renderToNodeStream()** :
+  ![stream](./pics/stream.png)
+
+  #### Remember:
+
+    - Stick to the page approach which means, when ever a component is a root level or needs a preloading of data, it should be a page and any other reusable component is put inside the components folder
