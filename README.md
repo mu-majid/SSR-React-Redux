@@ -245,6 +245,51 @@
   ```
   * Note the `Renderer` function is the one that responsible for communicating the `staticRouterContext` to our components.
 
-## Visiting Protected Resources:
+  * Context is also for redirects on the server (use `Redirect` component from react-router-dom)
 
-  -
+## Visiting Protected Resources While not auth:
+
+  - this will essentially cause an error to be thrown from the component's `loadData` function. And we have to think of a better error handling.
+
+  #### Approach One:
+
+  * Just wire up a `.catch(err => {})` to our `Promise.all(promises)`.
+  * Not the best solution, actually it is the poorest one., because it dumbs the entore rendering process and just send an error to the user.
+
+  #### Approach Two:
+
+  * Always attepmt to render the content, no matter what error occurs.
+  * Better from the previous, but there is a big issue here, and that is, we are using `Promise.all`, and if any promise rejects, we will call catch and **render early**, even if there are some unresolved promises in the promise.all.
+
+  #### Approach Three: (used)
+
+  * So, the issue with approach 2 is rendering early because of how `Promise.all` works, it would be great if we could wait for all promises to resolve/reject and then render our content.
+  * one solution is to wrap each promise that gets produced from the `loadData()` call in another promise. This wrapper promise works as a watcher of the `loadData` promise, and this wrapper will always resolve, indicating the status of the inner promise.
+  * All these wrapper promises (outer promises) will be passed to the `Promise.all` call and as mentioned above these wrappers will always resolve, so we will not face the problem we had with promise.all previously.
+
+  #### Note:
+
+  * When a user tries to access a protected page, we should try to autheticate them (requireAuth) and if auth failed, we should redirect them away from this page to ,say, the login page.
+
+  * The error handling is happening when we actually render the react application (after fetching data occur (whether resolved or rejected))
+
+  * the below duagram shows that we have separated data fetcing process from error handling process. And very **importantly** if an error occur during data fetching, we are still rendering the application and only then we handle errors.
+
+  ![errorhandle](./pics/error-handling.png)
+
+  **But Why ???** => Remember error handling should also be done on the client, in case a user visit a public initial page then tries to visit a protected page the react app itself should be the one handling errors.
+
+  So the benefit is that our error handling is going to work equivalently well on the server and the browser.
+
+  #### Higher Order Components:
+
+  *check this [link](https://blog.jakoblind.no/simple-explanation-of-higher-order-components-hoc/)*
+
+  * function that takes a component and wrap it and return an enhanced/wrapped version of the input component.
+  * The idea with HOC is to enhance components with functions or data.
+  * These type of components are very common around auth, redirect and validation logic in react applications.
+
+  #### Handling Redirects on the server:
+
+  * When we use the Redirect component from react-router-dom on server side to redirect the user, remember we are using StaticRouter on the server, and any redirects are recorded on te context object of that router.
+  * the context object will have a `url`, `location` and `action` properties if a redirect is attempted.

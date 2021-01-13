@@ -23,15 +23,27 @@ app.get('*', (req, res) => {
 
   // get components that needs to be rendered for the requested page (req.path)
   console.log('These Components needs rendering : \n', matchRoutes(Routes, req.path))
-  const componentsDataPromises = matchRoutes(Routes, req.path).map(({ route }) => {
+  const componentsDataPromises = matchRoutes(Routes, req.path)
+    .map(({ route }) => {
     return route.loadData ? route.loadData(store) : null;
-  });
+    })
+    .map(promise => {
+      if (promise) {
+        return new Promise((resolve, reject) => { // wrapper promise that always resolve no matter what the result from inner promise is
+          promise.then(resolve).catch(resolve);
+        });
+      }
+    });
 
   Promise.all(componentsDataPromises)
     .then(() => {
       const staticRouterContext = {};
       const content = Renderer(req, store, staticRouterContext);
-      console.log('rendering complete ', content.length)
+      console.log('rendering complete ', content.length);
+
+      if (staticRouterContext.url) {
+        return res.redirect(301, staticRouterContext.url)
+      }
 
       if (staticRouterContext.notFound) {
         console.log('Not Found ', staticRouterContext.notFound)
@@ -39,7 +51,12 @@ app.get('*', (req, res) => {
         res.status(404);
       }
       return res.send(content);
-    });
+    })
+    // .catch(error => {
+    //   console.log('Error Occured:: ', error);
+
+    //   return res.status(error.statusCode || 500).send(error.message);
+    // });
 
 });
 
