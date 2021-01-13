@@ -247,7 +247,7 @@
 
   * Context is also for redirects on the server (use `Redirect` component from react-router-dom)
 
-## Visiting Protected Resources While not auth:
+## Visiting Protected Resources While not auth (Err Handling Cont'd):
 
   - this will essentially cause an error to be thrown from the component's `loadData` function. And we have to think of a better error handling.
 
