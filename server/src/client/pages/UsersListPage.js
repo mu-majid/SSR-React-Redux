@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { fetchUsers } from "../actions";
+import { Helmet } from 'react-helmet';
 
 class UsersList extends Component {
   componentDidMount () {
@@ -13,9 +14,20 @@ class UsersList extends Component {
     });
   }
 
+  head() {
+    return (
+      <Helmet>
+        <title>{`${this.props.users.length} Users Loaded`}</title>
+        <meta property="og:title" content="Users App" />
+      </Helmet>
+    );
+  }
+
   render () {
     return (
       <div>
+        {this.head()}
+
         <ul>
           <h1>Public resource of users</h1>
           {this.renderusers()}
