@@ -293,3 +293,9 @@
 
   * When we use the Redirect component from react-router-dom on server side to redirect the user, remember we are using StaticRouter on the server, and any redirects are recorded on te context object of that router.
   * the context object will have a `url`, `location` and `action` properties if a redirect is attempted.
+
+## Extra Topics Around SSR:
+
+  * Optimizing for SEO, using `meta` tags. Check The Open Graph Protocol.
+  * we want to have the ability to change these met tags depending on the page the user is visiting.
+  * we will use `react-helmet` for setting these meta tags.
