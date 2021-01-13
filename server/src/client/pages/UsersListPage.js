@@ -17,6 +17,7 @@ class UsersList extends Component {
     return (
       <div>
         <ul>
+          <div>Public resource of users</div>
           {this.renderusers()}
         </ul>
       </div>
@@ -29,6 +30,7 @@ function mapStateToProps (state) {
 }
 
 function loadData (store) {
+  console.log('Load Data Fn : Users List Component');
   
   return store.dispatch(fetchUsers()); // store is the server side store instance
 }

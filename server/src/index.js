@@ -19,17 +19,28 @@ app.use('/api', proxy('http://react-ssr-api.herokuapp.com', { // only specific t
 app.use(express.static('public'));
 app.get('*', (req, res) => {
   const store = createStore(req); // server side store
+  console.log('==============\n New request Coming\n==============');
 
   // get components that needs to be rendered for the requested page (req.path)
+  console.log('These Components needs rendering : \n', matchRoutes(Routes, req.path))
   const componentsDataPromises = matchRoutes(Routes, req.path).map(({ route }) => {
     return route.loadData ? route.loadData(store) : null;
   });
 
   Promise.all(componentsDataPromises)
     .then(() => {
-      return res.send(Renderer(req, store));
+      const staticRouterContext = {};
+      const content = Renderer(req, store, staticRouterContext);
+      console.log('rendering complete ', content.length)
+
+      if (staticRouterContext.notFound) {
+        console.log('Not Found ', staticRouterContext.notFound)
+
+        res.status(404);
+      }
+      return res.send(content);
     });
-  
+
 });
 
 app.listen(3000, () => {

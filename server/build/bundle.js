@@ -156,17 +156,54 @@ var fetchCurrentUser = exports.fetchCurrentUser = function fetchCurrentUser() {
   }();
 };
 
+var FETCH_ADMINS = exports.FETCH_ADMINS = 'fetch_admins';
+var fetchAdmins = exports.fetchAdmins = function fetchAdmins() {
+  return function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(dispatch, getState, api) {
+      var _ref6, data;
+
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return api.get('/admins');
+
+            case 2:
+              _ref6 = _context3.sent;
+              data = _ref6.data;
+
+
+              dispatch({
+                type: FETCH_ADMINS,
+                payload: data
+              });
+
+            case 5:
+            case 'end':
+              return _context3.stop();
+          }
+        }
+      }, _callee3, undefined);
+    }));
+
+    return function (_x7, _x8, _x9) {
+      return _ref5.apply(this, arguments);
+    };
+  }();
+};
+
 /***/ }),
 /* 2 */
 /***/ (function(module, exports) {
 
-module.exports = require("react-router-config");
+module.exports = require("react-redux");
 
 /***/ }),
 /* 3 */
 /***/ (function(module, exports) {
 
-module.exports = require("react-redux");
+module.exports = require("react-router-config");
 
 /***/ }),
 /* 4 */
@@ -197,6 +234,14 @@ var _UsersListPage = __webpack_require__(16);
 
 var _UsersListPage2 = _interopRequireDefault(_UsersListPage);
 
+var _NotFoundpage = __webpack_require__(17);
+
+var _NotFoundpage2 = _interopRequireDefault(_NotFoundpage);
+
+var _AdminsListPage = __webpack_require__(18);
+
+var _AdminsListPage2 = _interopRequireDefault(_AdminsListPage);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = [_extends({}, _App2.default, { // no path for App, so it will always ebe shown on screen
@@ -205,7 +250,11 @@ exports.default = [_extends({}, _App2.default, { // no path for App, so it will 
     exact: true
   }), _extends({}, _UsersListPage2.default, {
     path: '/users'
-  })]
+  }), _extends({}, _AdminsListPage2.default, {
+    path: '/admins'
+  }), _extends({
+    path: ''
+  }, _NotFoundpage2.default)]
 })];
 
 /***/ }),
@@ -237,13 +286,13 @@ var _expressHttpProxy = __webpack_require__(10);
 
 var _expressHttpProxy2 = _interopRequireDefault(_expressHttpProxy);
 
-var _reactRouterConfig = __webpack_require__(2);
+var _reactRouterConfig = __webpack_require__(3);
 
 var _renderer = __webpack_require__(11);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _reduxServerStore = __webpack_require__(18);
+var _reduxServerStore = __webpack_require__(20);
 
 var _reduxServerStore2 = _interopRequireDefault(_reduxServerStore);
 
@@ -267,8 +316,10 @@ app.use('/api', (0, _expressHttpProxy2.default)('http://react-ssr-api.herokuapp.
 app.use(_express2.default.static('public'));
 app.get('*', function (req, res) {
   var store = (0, _reduxServerStore2.default)(req); // server side store
+  console.log('==============\n New request Coming\n==============');
 
   // get components that needs to be rendered for the requested page (req.path)
+  console.log('These Components needs rendering : \n', (0, _reactRouterConfig.matchRoutes)(_Routes2.default, req.path));
   var componentsDataPromises = (0, _reactRouterConfig.matchRoutes)(_Routes2.default, req.path).map(function (_ref) {
     var route = _ref.route;
 
@@ -276,7 +327,16 @@ app.get('*', function (req, res) {
   });
 
   Promise.all(componentsDataPromises).then(function () {
-    return res.send((0, _renderer2.default)(req, store));
+    var staticRouterContext = {};
+    var content = (0, _renderer2.default)(req, store, staticRouterContext);
+    console.log('rendering complete ', content.length);
+
+    if (staticRouterContext.notFound) {
+      console.log('Not Found ', staticRouterContext.notFound);
+
+      res.status(404);
+    }
+    return res.send(content);
   });
 });
 
@@ -325,11 +385,11 @@ var _Routes2 = _interopRequireDefault(_Routes);
 
 var _reactRouterDom = __webpack_require__(5);
 
-var _reactRedux = __webpack_require__(3);
+var _reactRedux = __webpack_require__(2);
 
-var _reactRouterConfig = __webpack_require__(2);
+var _reactRouterConfig = __webpack_require__(3);
 
-var _serializeJavascript = __webpack_require__(17);
+var _serializeJavascript = __webpack_require__(19);
 
 var _serializeJavascript2 = _interopRequireDefault(_serializeJavascript);
 
@@ -337,13 +397,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // for xss attacks
 
-exports.default = function (req, store) {
+exports.default = function (req, store, context) {
   var content = (0, _server.renderToString)(_react2.default.createElement(
     _reactRedux.Provider,
     { store: store },
     _react2.default.createElement(
       _reactRouterDom.StaticRouter,
-      { location: req.path, context: {} },
+      { location: req.path, context: context },
       _react2.default.createElement(
         'div',
         null,
@@ -376,7 +436,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterConfig = __webpack_require__(2);
+var _reactRouterConfig = __webpack_require__(3);
 
 var _Header = __webpack_require__(14);
 
@@ -398,12 +458,17 @@ var App = function App(_ref) {
   );
 };
 
+function loadData(_ref2) {
+  var dispatch = _ref2.dispatch;
+
+  console.log('Load Data Fn : App Component');
+
+  return dispatch((0, _actions.fetchCurrentUser)());
+}
+
 exports.default = {
   component: App,
-  loadData: function loadData(_ref2) {
-    var dispatch = _ref2.dispatch;
-    return dispatch((0, _actions.fetchCurrentUser)());
-  }
+  loadData: loadData
 };
 
 /***/ }),
@@ -423,7 +488,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(5);
 
-var _reactRedux = __webpack_require__(3);
+var _reactRedux = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -557,7 +622,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRedux = __webpack_require__(3);
+var _reactRedux = __webpack_require__(2);
 
 var _actions = __webpack_require__(1);
 
@@ -603,6 +668,11 @@ var UsersList = function (_Component) {
         _react2.default.createElement(
           'ul',
           null,
+          _react2.default.createElement(
+            'div',
+            null,
+            'Public resource of users'
+          ),
           this.renderusers()
         )
       );
@@ -619,6 +689,7 @@ function mapStateToProps(state) {
 }
 
 function loadData(store) {
+  console.log('Load Data Fn : Users List Component');
 
   return store.dispatch((0, _actions.fetchUsers)()); // store is the server side store instance
 }
@@ -630,9 +701,36 @@ exports.default = {
 
 /***/ }),
 /* 17 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = require("serialize-javascript");
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var NotFoundPage = function NotFoundPage(_ref) {
+  var _ref$staticContext = _ref.staticContext,
+      staticContext = _ref$staticContext === undefined ? {} : _ref$staticContext;
+  // default to {} because it does not exist on BrowserRouter
+  staticContext.notFound = true;
+  return _react2.default.createElement(
+    'h1',
+    null,
+    'Ops, page Not Found'
+  );
+};
+
+exports.default = {
+  component: NotFoundPage
+};
 
 /***/ }),
 /* 18 */
@@ -645,17 +743,117 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(2);
+
+var _actions = __webpack_require__(1);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var AdminsList = function (_Component) {
+  _inherits(AdminsList, _Component);
+
+  function AdminsList() {
+    _classCallCheck(this, AdminsList);
+
+    return _possibleConstructorReturn(this, (AdminsList.__proto__ || Object.getPrototypeOf(AdminsList)).apply(this, arguments));
+  }
+
+  _createClass(AdminsList, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.props.fetchAdmins();
+    }
+  }, {
+    key: 'renderAdmins',
+    value: function renderAdmins() {
+      return this.props.admins.map(function (admin) {
+        return _react2.default.createElement(
+          'li',
+          { key: admin.id },
+          admin.name
+        );
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'ul',
+          null,
+          _react2.default.createElement(
+            'div',
+            null,
+            'Protected resource of admins'
+          ),
+          this.renderAdmins()
+        )
+      );
+    }
+  }]);
+
+  return AdminsList;
+}(_react.Component);
+
+;
+
+function mapStateToProps(state) {
+  return { admins: state.admins };
+}
+
+function loadData(store) {
+  console.log('Load Data Fn : Admins List Component');
+
+  return store.dispatch((0, _actions.fetchAdmins)()); // store is the server side store instance
+}
+
+exports.default = {
+  component: (0, _reactRedux.connect)(mapStateToProps, { fetchAdmins: _actions.fetchAdmins })(AdminsList),
+  loadData: loadData
+};
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports) {
+
+module.exports = require("serialize-javascript");
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _redux = __webpack_require__(6);
 
-var _reduxThunk = __webpack_require__(19);
+var _reduxThunk = __webpack_require__(21);
 
 var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-var _reducers = __webpack_require__(20);
+var _reducers = __webpack_require__(22);
 
 var _reducers2 = _interopRequireDefault(_reducers);
 
-var _axios = __webpack_require__(23);
+var _axios = __webpack_require__(26);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -673,13 +871,13 @@ exports.default = function (req) {
 };
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, exports) {
 
 module.exports = require("redux-thunk");
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -691,23 +889,28 @@ Object.defineProperty(exports, "__esModule", {
 
 var _redux = __webpack_require__(6);
 
-var _usersReducer = __webpack_require__(21);
+var _usersReducer = __webpack_require__(23);
 
 var _usersReducer2 = _interopRequireDefault(_usersReducer);
 
-var _currentUser = __webpack_require__(22);
+var _currentUser = __webpack_require__(24);
 
 var _currentUser2 = _interopRequireDefault(_currentUser);
+
+var _adminsReducer = __webpack_require__(25);
+
+var _adminsReducer2 = _interopRequireDefault(_adminsReducer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = (0, _redux.combineReducers)({
   users: _usersReducer2.default,
-  authenticated: _currentUser2.default
+  authenticated: _currentUser2.default,
+  admins: _adminsReducer2.default
 });
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -733,7 +936,7 @@ exports.default = function () {
 };
 
 /***/ }),
-/* 22 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -759,7 +962,33 @@ exports.default = function () {
 };
 
 /***/ }),
-/* 23 */
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _actions = __webpack_require__(1);
+
+exports.default = function () {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var action = arguments[1];
+
+  switch (action.type) {
+    case _actions.FETCH_ADMINS:
+      return action.payload;
+
+    default:
+      return state;
+  }
+};
+
+/***/ }),
+/* 26 */
 /***/ (function(module, exports) {
 
 module.exports = require("axios");

@@ -13,9 +13,13 @@ const App = ({ route }) => {
   );
 };
 
+function loadData ({ dispatch }) {
+  console.log('Load Data Fn : App Component');
 
+  return dispatch(fetchCurrentUser());
+}
 
 export default {
   component: App,
-  loadData: ({ dispatch }) => dispatch(fetchCurrentUser())
+  loadData
 };
