@@ -3,7 +3,9 @@
   - This repo provides some information about SSR, why we use it, and challenges of SSR.
   - I will use React, with redux and React Router, Also, topics like authentication will be discussed.
 
-  check this links [one](https://vijayt.com/post/challenges-in-server-side-rendering-react-apps-ssr/), [two](https://nckweb.com.ar/a-pain-in-the-react-challenges-behind-ssr/)
+  check these links [one](https://vijayt.com/post/challenges-in-server-side-rendering-react-apps-ssr/), [two](https://nckweb.com.ar/a-pain-in-the-react-challenges-behind-ssr/) for more information about the topic.
+
+  *These notes and code are from various sources, but most of it are from Stephen Grider's course*
 
 ## Why?
 
@@ -15,22 +17,17 @@
   ![traditionl](./pics/typical-react.png)
 
   - Traditional React apps take a slightly long time to get content visible on the screen, which is a behavior we want to avoid.
-
-  - With SSR, whne the browser reach out to server, it will get an html document thta has much more content compared to the traditional react app. So, having a full document really get content to screen pretty fast. (We are still using react on the client).
+  - With SSR, whne the browser reach out to server, it will get an html document that has much more content compared to the traditional react app. So, having a full document really get content to screen pretty fast. (We are still using react on the client).
 
   ![ssr](./pics/ssr-react.png)
 
 ## App Overview:
 
-  - We would have `two` separate backend servers, onr for business logic (auth, logging, db access, ...) and the other one for rendering the html document.
-
-  - the budiness logic server lives at `https://react-ssr-api.herokuapp.com/`
-
+  - We will have `two` separate backend servers, one for business logic (auth, logging, db access, ...) and the other one for rendering the html document.
+  - the business logic server lives at `https://react-ssr-api.herokuapp.com/`
   -  the first benefit of this separation is that we could replace react with any other technology at any time.
-
   - Another benefit is that we could scale out each server separately.
-
-  - IMPORTANT NOTE: SSR performance is not fast and needs optimization (like having fast machines for the rendering servers). check out this [Walmart labs blog post](https://medium.com/walmartglobaltech/using-electrode-to-improve-react-server-side-render-performance-by-up-to-70-e43f9494eb8b) 
+  - **IMPORTANT NOTE**: SSR performance is not fast and needs optimization (like having fast machines for the rendering servers). check out this [Walmart labs blog post](https://medium.com/walmartglobaltech/using-electrode-to-improve-react-server-side-render-performance-by-up-to-70-e43f9494eb8b) 
 
   ![sepservers](./pics/sep-servers.png)
 
@@ -38,13 +35,10 @@
 
   - **ReactDOM.render**: Creates instances of a bunch of components and mounts them to a DOM node.
   - **ReactDOM.renderToString**: renders a bunch of components one time and produces a string out of all the resulting HTML.
-
-  - Isomorphic/Universal Javascript: same code runs on both client and server (like using es5 imports on the server)
+  - Isomorphic/Universal Javascript: same code runs on both client and server (like using es5 imports on the server instead of `require`)
   - Server-side Rendering: Generate HTML on the server and ship it down to the client.
-
-  - Event handlers (onClick, ...) are registered after component is re4ndered and atached to the dom in a regular react app.
+  - Event handlers (onClick, ...) are registered after component is rendered and atached to the dom in a regular react app.
   - But in the case of SSR, no JS files are sent to the user by default, So, we need, after sending HTML, to send our react app that have the JS functionality.
-
   - So to ship the react app to the browser we are going to create a **second bundle** that only contains the React App code (the first one contains server code + react app).
 
   ## Why second bundle ??
@@ -68,6 +62,7 @@
 ## Routing Inside SSR Application:
 
   - We have two tiers of routing inside our app like shown in th picture below
+  
   ![routing](./pics/routing.png)
 
   - express route handler will delegate  requests to react router instead of handling it. So react router has the final saying in what gets shown on the screen. (both on server -delegating reqs to it by express handler- and on client when hydration occur).
@@ -98,10 +93,10 @@
 
   ![4-challenges](./pics/4-challenges.png)
 
-  1. the first one is a result of the other three challenges and should be solved by having two stores one on the server and the other o the client.
-  2. We need to know who is authenticated, and we are using cookie based auth, and this data is hard to obtain on the server.
-  3. on the browser, we call `actionCreator`, and let it do its thing (fire request, signal it has finished, run reducer, react re-renders when we state change ), but now on the server we need to handle all these steps that were handled for us on the browser.
-  4. this is the easier one :)
+  1. Challenge 1: the first one is a result of the other three challenges and should be solved by having two stores one on the server and the other on the client.
+  2. Challenge 2: We need to know who is authenticated, and we are using cookie based auth, and this data is hard to obtain on the server.
+  3. Challenge 3: on the browser, we call `actionCreator`, and let it do its thing (fire request, signal it has finished, run reducer, react re-renders when we state change ), but now on the server we need to handle all these steps that were handled for us on the browser.
+  4. Challenge 4: this is the easier one :)
 
 
   - babel-polyfill is a module that enable using async/await syntax inside am action creator
@@ -161,7 +156,9 @@
 
 ## Authentication With SSR ?
 
-  check this link [one](https://www.bugsnag.com/blog/server-side-rendering-and-authenticated-content)
+
+
+  check this [link](https://www.bugsnag.com/blog/server-side-rendering-and-authenticated-content)
 
   - Our API uses **cookies** after going through OAuth flow, but the issue with cookies is that cookies are associated with full domain, so requests to sub domains will not include the cookie. So our Render Server will not be able to make requests to API server on behalf of the browser.
 
@@ -178,11 +175,15 @@
 
   ![proxy-note](./pics/auth-proxy-flow.png)
 
+  #### Authentication Flow itself ?
+  
+  ![auth](./pics/auth.png)
+
   ### Why Not JWTs ? 
 
   *remember that jwts could be used inside a cookie, but here I am discussing JWTs inside header, url or body of request*.
 
-  - The idea of SSR to send rendered content as fasf as possible, and when we think of the first initial request to the server, we would not be able to attach such a jwt and get content right away.
+  - The idea of SSR to send rendered content as fast as possible and using jwts will not satisfy this goal, as we would send req to server, then it will ask for a jwt, then we make another follow up request to send the jwt..., and when we think of the first initial request to the server, we would not be able to attach such a jwt and get content right away.
 
   - Also think of a scenario that a user tpe the url in the browser bar and hits enter, we have zero control on that request except that cookies are sent by default with any request.
 
@@ -214,8 +215,6 @@
 
   ![solution](./pics/custom-axios.png)
 
-  ## Authentication Flow itself ?
-  ![auth](./pics/auth.png)
 
 ## Error handling in SSR: 
 
@@ -253,12 +252,12 @@
 
   #### Approach One:
 
-  * Just wire up a `.catch(err => {})` to our `Promise.all(promises)`.
-  * Not the best solution, actually it is the poorest one., because it dumbs the entore rendering process and just send an error to the user.
+  * Just wire up a `.catch(err => {})` to our `Promise.all(loadDataFunctionsPeomises)` inside server's `index.js` file.
+  * Not the best solution, actually it is the poorest one., because it dumbs the entire rendering process and just send an error to the user.
 
   #### Approach Two:
 
-  * Always attepmt to render the content, no matter what error occurs.
+  * Always attempt to render the content, no matter what error occurs. (`Promise.all(promises).then(render).catch(render)`)
   * Better from the previous, but there is a big issue here, and that is, we are using `Promise.all`, and if any promise rejects, we will call catch and **render early**, even if there are some unresolved promises in the promise.all.
 
   #### Approach Three: (used)
@@ -273,11 +272,11 @@
 
   * The error handling is happening when we actually render the react application (after fetching data occur (whether resolved or rejected))
 
-  * the below duagram shows that we have separated data fetcing process from error handling process. And very **importantly** if an error occur during data fetching, we are still rendering the application and only then we handle errors.
+  * the below diagram shows that we have separated data fetcing process from error handling process. And very **importantly** if an error occurs during data fetching, we are still rendering the application and only then we handle errors.
 
   ![errorhandle](./pics/error-handling.png)
 
-  **But Why ???** => Remember error handling should also be done on the client, in case a user visit a public initial page then tries to visit a protected page the react app itself should be the one handling errors.
+  **But Why ???** => Remember error handling should also be done on the client, in case a user visit a public initial page then tries to visit a protected page the react app on the browser should be the one handling errors.
 
   So the benefit is that our error handling is going to work equivalently well on the server and the browser.
 
