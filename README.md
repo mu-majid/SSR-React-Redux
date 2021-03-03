@@ -2,7 +2,9 @@
 
   - This repo provides some information about SSR, why we use it, and challenges of SSR.
   - I will use React, with redux and React Router, Also, topics like authentication will be discussed.
-  
+  - Check These Links:
+    1. http://farmdev.com/thoughts/107/why-server-side-rendering-in-react-is-so-hard/
+    2. https://medium.com/@saurssaurav33/server-side-rendering-with-react-js-in-depth-part-one-3bfc1dfd5a7a
 
   check these links [one](https://vijayt.com/post/challenges-in-server-side-rendering-react-apps-ssr/), [two](https://nckweb.com.ar/a-pain-in-the-react-challenges-behind-ssr/) for more information about the topic.
 
